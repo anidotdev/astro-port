@@ -1,0 +1,81 @@
+---
+import { skills } from "../data/skills";
+---
+
+<section class="section" id="skills">
+    <p class="eyebrow">05 — Skills &amp; Tools</p>
+
+    <div class="skills-grid">
+        {
+            skills.map((skill) => (
+                <span
+                    class="skill-pill"
+                    data-cuelume-hover="tick"
+                    data-cuelume-press
+                    data-cuelume-release
+                >
+                    {skill}
+                </span>
+            ))
+        }
+    </div>
+</section>
+
+<style>
+    .skills-grid {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 8px;
+    }
+
+    .skill-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 7px 12px;
+
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+
+        background: transparent;
+
+        color: var(--ink-dim);
+
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 1.4;
+
+        cursor: default;
+
+        transition:
+            color 150ms ease,
+            border-color 150ms ease,
+            background-color 150ms ease,
+            transform 150ms ease;
+    }
+
+    .skill-pill:hover {
+        color: var(--ink);
+
+        border-color: var(--ink-faint);
+
+        background: color-mix(in srgb, var(--ink) 5%, transparent);
+
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 480px) {
+        .skills-grid {
+            gap: 7px;
+        }
+
+        .skill-pill {
+            padding: 6px 10px;
+
+            font-size: 11px;
+        }
+    }
+</style>

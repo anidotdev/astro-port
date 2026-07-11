@@ -1,0 +1,56 @@
+---
+import "../styles/global.css";
+import "@phosphor-icons/web/regular";
+
+interface Props {
+    title?: string;
+    description?: string;
+}
+
+const {
+    title = "Animesh, Backend Engineer",
+    description = "Backend developere, doing public building and writing.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="description" content={description} />
+        <title>{title}</title>
+        <script is:inline>
+            // Set theme before paint to avoid flash
+            const stored = localStorage.getItem("theme");
+            const theme = stored || "dark";
+            document.documentElement.setAttribute("data-theme", theme);
+        </script>
+    </head>
+    <body>
+        <div class="frame">
+            <slot />
+        </div>
+
+        <script>
+            import { bind, play } from "cuelume";
+
+            bind();
+
+            function unlockAudio() {
+                play("whisper");
+
+                document.removeEventListener("pointerdown", unlockAudio);
+
+                document.removeEventListener("keydown", unlockAudio);
+            }
+
+            document.addEventListener("pointerdown", unlockAudio, {
+                once: true,
+            });
+
+            document.addEventListener("keydown", unlockAudio, { once: true });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,27 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+    <div class="inner footer-inner">
+        <span>© {year} Animesh</span>
+        <span class="footer-note">built with Astro</span>
+    </div>
+</footer>
+
+<style>
+    .footer {
+        padding: 20px 0;
+    }
+    .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--ink-faint);
+        padding-top: 20px;
+        padding-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+</style>

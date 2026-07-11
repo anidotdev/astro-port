@@ -1,0 +1,412 @@
+---
+import { projects } from "../data/projects";
+
+const statusColor: Record<string, string> = {
+    Live: "var(--green)",
+    Building: "var(--amber)",
+    Soon: "var(--ink-faint)",
+};
+
+const projectIcons: Record<string, string> = {
+    SERVER: "ph-terminal-window",
+    API: "ph-brackets-curly",
+    EDTECH: "ph-graduation-cap",
+    ML: "ph-brain",
+};
+---
+
+<section class="section" id="projects">
+    <p class="eyebrow">03 — Projects</p>
+
+    <div class="proj-grid">
+        {
+            projects.map((p) => (
+                <article class="project">
+                    <a
+                        href={p.href}
+                        class="project-preview"
+                        target={
+                            p.href.startsWith("http") ? "_blank" : undefined
+                        }
+                        rel="noopener noreferrer"
+                        aria-label={`View ${p.title}`}
+                    >
+                        <div class="preview-header">
+                            <span>{p.label}</span>
+
+                            <i
+                                class="ph ph-arrow-up-right"
+                                aria-hidden="true"
+                            />
+                        </div>
+
+                        <div class="preview-content">
+                            <div class="preview-glow" />
+
+                            <i
+                                class={`ph ${
+                                    projectIcons[p.label.toUpperCase()] ??
+                                    "ph-code"
+                                }`}
+                                aria-hidden="true"
+                            />
+
+                            <span>{p.title}</span>
+                        </div>
+                    </a>
+
+                    <div class="project-info">
+                        <div class="project-heading">
+                            <h3>{p.title}</h3>
+
+                            <span
+                                class="proj-status"
+                                style={`color:${statusColor[p.status]}`}
+                            >
+                                <span
+                                    class="status-dot"
+                                    style={`background:${statusColor[p.status]}`}
+                                />
+
+                                {p.status}
+                            </span>
+                        </div>
+
+                        <p class="proj-desc">{p.description}</p>
+
+                        <div class="proj-stack">
+                            {p.stack.map((technology) => (
+                                <span class="tag">{technology}</span>
+                            ))}
+                        </div>
+
+                        <a
+                            href={p.href}
+                            class="project-link"
+                            target={
+                                p.href.startsWith("http") ? "_blank" : undefined
+                            }
+                            rel="noopener noreferrer"
+                        >
+                            View project
+                            <i
+                                class="ph ph-arrow-up-right"
+                                aria-hidden="true"
+                            />
+                        </a>
+                    </div>
+                </article>
+            ))
+        }
+    </div>
+</section>
+
+<style>
+    .proj-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 34px 16px;
+    }
+
+    .project {
+        min-width: 0;
+    }
+
+    /* Project visual */
+
+    .project-preview {
+        display: flex;
+        flex-direction: column;
+
+        min-height: 185px;
+        padding: 8px;
+
+        overflow: hidden;
+
+        border: 1px solid var(--line);
+        border-radius: 9px;
+
+        background: var(--bg-raised);
+
+        transition:
+            border-color 160ms ease,
+            background-color 160ms ease,
+            transform 160ms ease;
+    }
+
+    .project-preview:hover {
+        border-color: var(--ink-faint);
+
+        background: color-mix(in srgb, var(--bg-raised) 94%, var(--ink) 6%);
+
+        transform: translateY(-2px);
+    }
+
+    .preview-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 2px 3px 9px;
+
+        font-family: var(--mono);
+        font-size: 10px;
+
+        color: var(--ink-faint);
+
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .preview-header i {
+        font-size: 14px;
+
+        transition:
+            color 150ms ease,
+            transform 150ms ease;
+    }
+
+    .project-preview:hover .preview-header i {
+        color: var(--ink);
+
+        transform: translate(1px, -1px);
+    }
+
+    .preview-content {
+        position: relative;
+
+        flex: 1;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        gap: 11px;
+
+        overflow: hidden;
+
+        border: 1px solid var(--line);
+        border-radius: 6px;
+
+        background: radial-gradient(
+            circle at center,
+            #292929 0%,
+            #191919 52%,
+            #111111 100%
+        );
+    }
+
+    .preview-content::before {
+        content: "";
+
+        position: absolute;
+        inset: 0;
+
+        opacity: 0.24;
+
+        background-image:
+            linear-gradient(var(--line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--line) 1px, transparent 1px);
+
+        background-size: 22px 22px;
+    }
+
+    .preview-content::after {
+        content: "";
+
+        position: absolute;
+        inset: 0;
+
+        background: linear-gradient(
+            to bottom,
+            transparent 55%,
+            rgb(0 0 0 / 20%)
+        );
+
+        pointer-events: none;
+    }
+
+    .preview-glow {
+        position: absolute;
+
+        width: 90px;
+        height: 90px;
+
+        border-radius: 50%;
+
+        background: color-mix(in srgb, var(--ink) 7%, transparent);
+
+        filter: blur(25px);
+    }
+
+    .preview-content > i,
+    .preview-content > span {
+        position: relative;
+        z-index: 1;
+    }
+
+    .preview-content > i {
+        font-size: 34px;
+
+        color: var(--ink-dim);
+
+        transition:
+            color 160ms ease,
+            transform 160ms ease;
+    }
+
+    .project-preview:hover .preview-content > i {
+        color: var(--ink);
+
+        transform: translateY(-2px);
+    }
+
+    .preview-content > span {
+        position: relative;
+        z-index: 1;
+
+        max-width: 80%;
+        overflow: hidden;
+
+        font-family: var(--sans);
+        font-size: 13px;
+        font-weight: 500;
+
+        color: var(--ink-dim);
+
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Project information */
+
+    .project-info {
+        padding: 11px 5px 0;
+    }
+
+    .project-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 10px;
+    }
+
+    .project-heading h3 {
+        margin: 0;
+
+        font-family: var(--sans);
+        font-size: 19px;
+        font-weight: 600;
+        line-height: 1.2;
+
+        color: var(--ink);
+    }
+
+    .proj-status {
+        flex-shrink: 0;
+
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        font-family: var(--mono);
+        font-size: 10px;
+    }
+
+    .status-dot {
+        width: 6px;
+        height: 6px;
+
+        border-radius: 50%;
+    }
+
+    .proj-desc {
+        margin: 8px 0 0;
+
+        color: var(--ink-dim);
+
+        font-family: var(--sans);
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    .proj-stack {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 5px;
+
+        margin-top: 11px;
+    }
+
+    .tag {
+        padding: 4px 7px;
+
+        border: 1px solid var(--line);
+
+        border-radius: 5px;
+
+        color: var(--ink-dim);
+
+        font-family: var(--mono);
+        font-size: 9px;
+    }
+
+    .project-link {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 5px;
+
+        margin-top: 12px;
+
+        color: var(--ink-dim);
+
+        font-family: var(--sans);
+        font-size: 12px;
+        font-weight: 500;
+
+        transition: color 150ms ease;
+    }
+
+    .project-link:hover {
+        color: var(--ink);
+    }
+
+    .project-link i {
+        font-size: 12px;
+
+        transition: transform 150ms ease;
+    }
+
+    .project-link:hover i {
+        transform: translate(1px, -1px);
+    }
+
+    /* Mobile */
+
+    @media (max-width: 620px) {
+        .proj-grid {
+            grid-template-columns: 1fr;
+
+            gap: 40px;
+        }
+
+        .project-preview {
+            min-height: 220px;
+        }
+
+        .project-heading h3 {
+            font-size: 22px;
+        }
+
+        .proj-desc {
+            font-size: 14px;
+        }
+    }
+</style>
