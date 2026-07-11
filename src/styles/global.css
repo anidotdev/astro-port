@@ -175,25 +175,31 @@ button {
 
   position: absolute;
 
-  z-index: 20;
-
   top: 0;
   bottom: 0;
+
+  z-index: 100;
 
   width: 1px;
 
   pointer-events: none;
 
-  background-image:
+  background:
     repeating-linear-gradient(
       to bottom,
-
       var(--line) 0,
       var(--line) 5px,
-
       transparent 5px,
       transparent 10px
     );
+}
+
+.frame::before {
+  left: 1px;
+}
+
+.frame::after {
+  right: 1px;
 }
 
 .frame::before {
