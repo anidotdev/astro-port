@@ -1,371 +1,298 @@
 ---
-interface ContributionDay {
-    contributionCount: number;
-    contributionLevel:
-        | "NONE"
-        | "FIRST_QUARTILE"
-        | "SECOND_QUARTILE"
-        | "THIRD_QUARTILE"
-        | "FOURTH_QUARTILE";
-    date: string;
-}
-
-interface ContributionWeek {
-    contributionDays: ContributionDay[];
-}
-
-interface GitHubResponse {
-    data?: {
-        user: {
-            contributionsCollection: {
-                contributionCalendar: {
-                    totalContributions: number;
-                    weeks: ContributionWeek[];
-                };
-            };
-        } | null;
-    };
-
-    errors?: {
-        message: string;
-    }[];
-}
-
-const username = import.meta.env.GITHUB_USERNAME || "animeshhq";
-
-const token = import.meta.env.GITHUB_TOKEN;
-
-const levelMap: Record<ContributionDay["contributionLevel"], number> = {
-    NONE: 0,
-    FIRST_QUARTILE: 1,
-    SECOND_QUARTILE: 2,
-    THIRD_QUARTILE: 3,
-    FOURTH_QUARTILE: 4,
-};
-
-const query = `
-  query GetContributionCalendar($username: String!) {
-    user(login: $username) {
-      contributionsCollection {
-        contributionCalendar {
-          totalContributions
-
-          weeks {
-            contributionDays {
-              contributionCount
-              contributionLevel
-              date
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-let weeks: ContributionWeek[] = [];
-let totalContributions = 0;
-let contributionError = "";
-
-if (!token) {
-    contributionError =
-        "GitHub contribution data is unavailable because GITHUB_TOKEN is missing.";
-} else {
-    try {
-        const response = await fetch("https://api.github.com/graphql", {
-            method: "POST",
-
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-                "User-Agent": "animeshhq-portfolio",
-            },
-
-            body: JSON.stringify({
-                query,
-                variables: {
-                    username,
-                },
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`GitHub returned HTTP ${response.status}`);
-        }
-
-        const result = (await response.json()) as GitHubResponse;
-
-        if (result.errors?.length) {
-            throw new Error(
-                result.errors.map((error) => error.message).join(", "),
-            );
-        }
-
-        const calendar =
-            result.data?.user?.contributionsCollection.contributionCalendar;
-
-        if (!calendar) {
-            throw new Error(`GitHub user "${username}" was not found.`);
-        }
-
-        weeks = calendar.weeks;
-        totalContributions = calendar.totalContributions;
-    } catch (error) {
-        contributionError =
-            error instanceof Error
-                ? error.message
-                : "Unable to load GitHub contribution data.";
-
-        console.error("GitHub contribution fetch failed:", error);
-    }
-}
-
-const contributionDays = weeks.flatMap((week) => week.contributionDays);
-
-const activeDays = contributionDays.filter(
-    (day) => day.contributionCount > 0,
-).length;
-
-const monthLabels = weeks
-    .map((week) => {
-        const firstDay = week.contributionDays[0];
-
-        if (!firstDay) {
-            return "";
-        }
-
-        const date = new Date(`${firstDay.date}T00:00:00`);
-
-        return date.toLocaleDateString("en-US", {
-            month: "short",
-        });
-    })
-    .map((month, index, months) => {
-        if (index > 0 && month === months[index - 1]) {
-            return "";
-        }
-
-        return month;
-    });
+const username = "animeshhq";
 ---
 
-<section class="section" id="log">
-    <p class="eyebrow">02 — Activities</p>
-
+<div id="github-root" data-username={username}>
     <div class="log-panel">
         <div class="log-header">
             <span class="log-line">
                 <span class="dot-live"></span>
-
                 SYN → SYN-ACK → ACK &nbsp;|&nbsp; writing, shipping, repeat
             </span>
-
-            {
-                !contributionError && (
-                    <span class="log-stat">{activeDays} active days</span>
-                )
-            }
         </div>
 
-        {
-            contributionError ? (
-                <p class="log-error">
-                    GitHub activity is temporarily unavailable.
-                </p>
-            ) : (
-                <>
-                    <div class="grid-scroll">
-                        <div
-                            class="months"
-                            style={`grid-template-columns: repeat(${weeks.length}, 1fr)`}
-                        >
-                            {monthLabels.map((month) => (
-                                <span>{month}</span>
-                            ))}
-                        </div>
-
-                        <div
-                            class="grid"
-                            style={`grid-template-columns: repeat(${weeks.length}, 1fr)`}
-                        >
-                            {weeks.map((week) =>
-                                week.contributionDays.map((day) => (
-                                    <span
-                                        class={`cell lvl-${levelMap[day.contributionLevel]}`}
-                                        title={`${day.contributionCount} contribution${
-                                            day.contributionCount === 1
-                                                ? ""
-                                                : "s"
-                                        } on ${day.date}`}
-                                        aria-label={`${day.contributionCount} contributions on ${day.date}`}
-                                    />
-                                )),
-                            )}
-                        </div>
-                    </div>
-
-                    <div class="log-footer">
-                        <span>
-                            {totalContributions} contributions in the last year
-                        </span>
-
-                        <span class="legend">
-                            less
-                            <span class="cell lvl-0" />
-                            <span class="cell lvl-1" />
-                            <span class="cell lvl-2" />
-                            <span class="cell lvl-3" />
-                            <span class="cell lvl-4" />
-                            more
-                        </span>
-                    </div>
-                </>
-            )
-        }
+        <p class="log-loading">Loading GitHub activity...</p>
     </div>
-</section>
+</div>
+
+<script define:vars={{ username }}>
+    const root = document.getElementById("github-root");
+
+    const levelMap = {
+        NONE: 0,
+        FIRST_QUARTILE: 1,
+        SECOND_QUARTILE: 2,
+        THIRD_QUARTILE: 3,
+        FOURTH_QUARTILE: 4,
+    };
+
+    async function loadGitHub() {
+        try {
+            const response = await fetch(
+                `https://github-contributions-api.jogruber.de/v4/${username}`,
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch GitHub data");
+            }
+
+            const data = await response.json();
+
+            const weeks = data.contributions;
+            const totalContributions = data.total?.[0]?.count ?? 0;
+
+            const contributionDays = weeks.flatMap(
+                (week) => week.contributionDays,
+            );
+
+            const activeDays = contributionDays.filter(
+                (day) => day.contributionCount > 0,
+            ).length;
+
+            const monthLabels = weeks
+                .map((week) => {
+                    const firstDay = week.contributionDays[0];
+
+                    if (!firstDay) return "";
+
+                    const date = new Date(firstDay.date + "T00:00:00");
+
+                    return date.toLocaleDateString("en-US", {
+                        month: "short",
+                    });
+                })
+                .map((month, index, arr) =>
+                    index > 0 && month === arr[index - 1] ? "" : month,
+                );
+
+            root.innerHTML = `
+        <div class="log-panel">
+          <div class="log-header">
+            <span class="log-line">
+              <span class="dot-live"></span>
+              SYN → SYN-ACK → ACK &nbsp;|&nbsp; writing, shipping, repeat
+            </span>
+
+            <span class="log-stat">${activeDays} active days</span>
+          </div>
+
+          <div class="grid-scroll">
+            <div
+              class="months"
+              style="grid-template-columns: repeat(${weeks.length}, 1fr)"
+            >
+              ${monthLabels.map((month) => `<span>${month}</span>`).join("")}
+            </div>
+
+            <div
+              class="grid"
+              style="grid-template-columns: repeat(${weeks.length}, 1fr)"
+            >
+              ${weeks
+                  .map((week) =>
+                      week.contributionDays
+                          .map(
+                              (day) => `
+                        <span
+                          class="cell lvl-${levelMap[day.contributionLevel]}"
+                          title="${day.contributionCount} contribution${
+                              day.contributionCount === 1 ? "" : "s"
+                          } on ${day.date}"
+                          aria-label="${day.contributionCount} contributions on ${day.date}"
+                        ></span>
+                      `,
+                          )
+                          .join(""),
+                  )
+                  .join("")}
+            </div>
+          </div>
+
+          <div class="log-footer">
+            <span>${totalContributions} contributions in the last year</span>
+
+            <span class="legend">
+              less
+              <span class="cell lvl-0"></span>
+              <span class="cell lvl-1"></span>
+              <span class="cell lvl-2"></span>
+              <span class="cell lvl-3"></span>
+              <span class="cell lvl-4"></span>
+              more
+            </span>
+          </div>
+        </div>
+      `;
+        } catch (error) {
+            console.error(error);
+
+            root.innerHTML = `
+        <div class="log-panel">
+          <p class="log-error">
+            GitHub activity is temporarily unavailable.
+          </p>
+        </div>
+      `;
+        }
+    }
+
+    loadGitHub();
+</script>
 
 <style>
     .log-panel {
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-
-        background: transparent;
-
-        padding: 18px 20px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(8px);
     }
 
     .log-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 1rem;
         flex-wrap: wrap;
-        gap: 8px;
-
-        margin-bottom: 18px;
-
-        font-family: var(--mono);
-        font-size: 12px;
-
-        color: var(--ink);
     }
 
     .log-line {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 8px;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .dot-live {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: #39d353;
+        box-shadow: 0 0 0 6px rgba(57, 211, 83, 0.15);
+        animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        70% {
+            transform: scale(1.15);
+            opacity: 0.65;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
     }
 
     .log-stat {
-        color: var(--ink);
-    }
-
-    .log-error {
-        margin: 0;
-
-        font-family: var(--mono);
-        font-size: 12px;
-
-        color: var(--ink);
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.65);
     }
 
     .grid-scroll {
         overflow-x: auto;
-        padding-bottom: 3px;
+        padding-bottom: 0.25rem;
     }
 
     .months {
         display: grid;
-
-        min-width: 530px;
-        margin-bottom: 6px;
-
-        font-family: var(--mono);
-        font-size: 10px;
-
-        color: var(--ink);
+        gap: 3px;
+        margin-bottom: 0.35rem;
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.55);
+        min-width: max-content;
     }
 
     .months span {
-        white-space: nowrap;
+        text-align: left;
     }
 
     .grid {
         display: grid;
-
         grid-auto-flow: column;
-        grid-template-rows: repeat(7, 1fr);
-
+        grid-template-rows: repeat(7, 12px);
         gap: 3px;
-
-        min-width: 530px;
+        min-width: max-content;
     }
 
     .cell {
-        width: 100%;
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        background: #161b22;
+        transition:
+            transform 120ms ease,
+            filter 120ms ease;
+    }
 
-        aspect-ratio: 1;
-
-        border-radius: 2px;
-
-        background: var(--line-soft);
+    .cell:hover {
+        transform: scale(1.15);
+        filter: brightness(1.1);
     }
 
     .lvl-0 {
-        background: var(--line-soft);
+        background: #161b22;
     }
-
     .lvl-1 {
-        background: color-mix(in srgb, var(--ink) 25%, var(--line-soft));
+        background: #0e4429;
     }
-
     .lvl-2 {
-        background: color-mix(in srgb, var(--ink) 50%, var(--line-soft));
+        background: #006d32;
     }
-
     .lvl-3 {
-        background: color-mix(in srgb, var(--ink) 75%, var(--line-soft));
+        background: #26a641;
     }
-
     .lvl-4 {
-        background: var(--ink);
+        background: #39d353;
     }
 
     .log-footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
-
-        margin-top: 14px;
-
-        font-family: var(--mono);
-        font-size: 11px;
-
-        color: var(--ink);
+        gap: 1rem;
+        flex-wrap: wrap;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.65);
     }
 
     .legend {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 0.35rem;
     }
 
-    .legend .cell {
-        width: 10px;
-        height: 10px;
-
-        aspect-ratio: unset;
+    .log-loading,
+    .log-error {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 0.95rem;
     }
 
-    @media (max-width: 480px) {
-        .log-panel {
-            padding: 14px;
+    .log-error {
+        color: #ff8a8a;
+    }
+
+    @media (max-width: 640px) {
+        .grid {
+            grid-template-rows: repeat(7, 10px);
+            gap: 2px;
         }
 
-        .log-footer {
-            align-items: flex-start;
-            flex-direction: column;
-            gap: 10px;
+        .cell {
+            width: 10px;
+            height: 10px;
+        }
+
+        .months {
+            gap: 2px;
         }
     }
 </style>
