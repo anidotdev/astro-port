@@ -1,0 +1,55 @@
+---
+import { site } from '../data/site.js';
+import ThemeToggle from './ThemeToggle.astro';
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const nav = [
+  { href: '/articles/', label: 'Writing', match: '/articles' },
+  { href: '/projects/', label: 'Projects', match: '/projects' },
+  { href: '/notes/', label: 'Notes', match: '/notes' },
+  { href: '/about/', label: 'About', match: '/about' }
+];
+---
+<header class="site-header">
+  <div class="site-shell header-inner">
+    <a class="brand" href="/" aria-label="Animesh home">
+      <span>{site.shortName}</span>
+      <span class="brand-small">/ archive</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Primary navigation">
+      <ul class="nav-list">
+        {nav.map((item) => (
+          <li><a href={item.href} aria-current={pathname === item.match || pathname.startsWith(item.match + '/') ? 'page' : undefined}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <button class="utility-button" type="button" data-theme-toggle aria-label="Toggle dark mode"><span data-theme-icon>◐</span></button>
+      <ThemeToggle />
+      <button class="utility-button mobile-menu-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="mobile-navigation" aria-label="Open menu">Menu</button>
+    </div>
+  </div>
+
+  <nav id="mobile-navigation" class="site-shell mobile-nav" data-mobile-nav data-open="false" aria-label="Mobile navigation">
+    <ul>
+      {nav.map((item) => (
+        <li><a href={item.href} aria-current={pathname === item.match || pathname.startsWith(item.match + '/') ? 'page' : undefined}>{item.label}</a></li>
+      ))}
+    </ul>
+  </nav>
+
+</header>
+
+<script>
+  const qs = (selector, root = document) => root.querySelector(selector);
+  const menuButton = qs('[data-menu-toggle]');
+  const mobileNav = qs('[data-mobile-nav]');
+
+  menuButton?.addEventListener('click', () => {
+    const open = mobileNav.dataset.open === 'true';
+    mobileNav.dataset.open = String(!open);
+    menuButton.setAttribute('aria-expanded', String(!open));
+    menuButton.setAttribute('aria-label', open ? 'Open menu' : 'Close menu');
+  });
+</script>

@@ -1,34 +1,43 @@
-# Animesh — Portfolio
+# Animesh — Contemporary Academic Editorial Website
 
-Built with Astro. No JS framework needed — everything is static + a tiny bit of vanilla JS for the theme toggle.
+A real Astro + JavaScript personal website designed as a contemporary academic journal / engineering notebook.
 
-## Run locally
+## Stack
+
+- Astro 6
+- JavaScript + Astro components
+- Markdown content collections using Astro's Content Layer API
+- Vanilla browser JavaScript for theme selection, mobile navigation, TOC, and reading progress
+- `@astrojs/rss`
+- `@astrojs/sitemap`
+- CSS custom properties and modern responsive layout
+
+## Start
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open http://localhost:4321
-
-## Build for production
+Build for production:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Edit your content
+## Before deployment
 
-Everything you'll want to change lives in a few files:
+Edit `src/data/site.js` with the real email, GitHub, and LinkedIn details.
 
-- `src/data/projects.ts` — your project cards
-- `src/data/blogs.ts` — your blog post list (currently points to animeshhq.github.io)
-- `src/data/skills.ts` — the skills/tools pill list
-- `src/components/Hero.astro` — name, role, location, status line
-- `src/components/Contact.astro` — your real GitHub/LinkedIn/X/email links
-- `src/components/About.astro` — the three bullet points
+Edit `astro.config.mjs` and replace `https://example.com` with the real production URL. The URL is used for canonical URLs, sitemap output, RSS, and robots.txt.
 
-## Deploy
+## Adding an article
 
-Static output, so it deploys anywhere: Vercel, Netlify, Cloudflare Pages, or GitHub Pages (`astro build` outputs to `dist/`).
+Create a new Markdown file in `src/content/articles/` with frontmatter matching the collection schema in `src/content.config.ts`. The article route is generated automatically at:
+
+`/articles/<filename>/`
+
+## Design rules
+
+The site intentionally has no page-transition animations, motion effects, gradients, decorative textures, giant cards, glassmorphism, or heavy dashboard UI. Interaction states are immediate.

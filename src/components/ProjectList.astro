@@ -1,0 +1,18 @@
+---
+const { projects = [] } = Astro.props;
+---
+<div class="project-list">
+  {projects.map((project) => (
+    <article class="project-row">
+      <span class="archive-number">{project.number}</span>
+      <div>
+        <h3 class="project-name">{project.name}</h3>
+        <p class="project-description">{project.description}</p>
+      </div>
+      <div>
+        <p class="project-stack">{project.stack.join(' · ')}</p>
+        <p class="project-status">Status: {project.status}</p>
+      </div>
+    </article>
+  ))}
+</div>

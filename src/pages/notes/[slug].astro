@@ -1,0 +1,44 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedNotes } from '../../lib/content.js';
+
+export async function getStaticPaths() {
+  const notes = await getPublishedNotes();
+
+  return notes.map((note) => ({
+    params: { slug: note.id },
+    props: { note }
+  }));
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+
+const formattedDate = note.data.date.toLocaleDateString('en-US', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric'
+});
+---
+
+<BaseLayout title={`${note.data.title} — Animesh`} description={note.data.title}>
+  <article class="note-page site-shell">
+    <header class="note-page-header">
+      <a class="note-back" href="/notes/">← Notes</a>
+
+      <div class="note-page-meta">
+        <time datetime={note.data.date.toISOString()}>{formattedDate}</time>
+        {note.data.tags.length > 0 && (
+          <span>{note.data.tags.join(' · ')}</span>
+        )}
+      </div>
+
+      <h1 class="note-page-title">{note.data.title}</h1>
+    </header>
+
+    <div class="note-page-body">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

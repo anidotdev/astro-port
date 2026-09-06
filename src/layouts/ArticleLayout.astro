@@ -1,0 +1,87 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import ArticleMeta from '../components/ArticleMeta.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import ReadingProgress from '../components/ReadingProgress.astro';
+import { render } from 'astro:content';
+
+const { article, previous, next, related = [] } = Astro.props;
+const { Content } = await render(article);
+const title = article.data.title;
+---
+<BaseLayout title={`${title} — Animesh`} description={article.data.description} article>
+  <ReadingProgress />
+  <article>
+    <header class="site-shell article-header">
+      <div class="article-header-content">
+        <h1 class="article-title">{title}</h1>
+        <ArticleMeta article={article} />
+      </div>
+    </header>
+
+    <div class="rule"></div>
+
+    <div class="site-shell article-main">
+      <TableOfContents />
+
+      <div class="article-body-column">
+        <div class={`article-body ${article.data.dropCap ? 'drop-cap' : ''} `}>
+          <Content />
+        </div>
+
+        {article.data.references?.length > 0 && (
+          <section class="references" aria-labelledby="references-title">
+            <h2 id="references-title">References</h2>
+            <ol class="reference-list">
+              {article.data.references.map((reference, index) => (
+                <li><span class="reference-number">[{String(index + 1).padStart(2, '0')}]</span><span>{reference.text} — <a href={reference.href} rel="noopener noreferrer">{reference.label}</a></span></li>
+              ))}
+            </ol>
+          </section>
+        )}
+
+        <nav class="article-nav" aria-label="Article navigation">
+          {previous ? (
+            <a class="article-nav-item" href={`/articles/${previous.id}/`}>
+              <span class="article-nav-label">Previous article</span>
+              <span class="article-nav-title">{previous.data.title}</span>
+            </a>
+          ) : <span></span>}
+          {next ? (
+            <a class="article-nav-item" href={`/articles/${next.id}/`}>
+              <span class="article-nav-label">Next article</span>
+              <span class="article-nav-title">{next.data.title}</span>
+            </a>
+          ) : <span></span>}
+        </nav>
+
+        {related.length > 0 && (
+          <section style="margin-top:5rem" aria-labelledby="related-title">
+            <div class="section-heading">
+              <h2 id="related-title">More from the archive</h2>
+              <span class="section-number">Selected</span>
+            </div>
+            <div class="archive-list">
+              {related.map((item, index) => (
+                <a class="archive-row" href={`/articles/${item.id}/`}>
+                  <span class="archive-number">{String(index + 1).padStart(2, '0')}</span>
+                  <span class="archive-content">
+                    <h3 class="archive-title">{item.data.title}</h3>
+                    <span class="archive-meta">
+                      <span class="archive-category">{item.data.category}</span>
+                      <span>{item.data.readingTime} min</span>
+                      <time datetime={item.data.date.toISOString()}>
+                        {item.data.date.getFullYear()}
+                      </time>
+                    </span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+    </div>
+  </article>
+</BaseLayout>

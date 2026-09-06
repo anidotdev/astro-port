@@ -1,0 +1,20 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { getPublishedArticles } from '../../lib/content.js';
+
+export async function getStaticPaths() {
+  const articles = await getPublishedArticles();
+  return articles.map((article, index) => ({
+    params: { slug: article.id },
+    props: {
+      article,
+      previous: articles[index + 1] ?? null,
+      next: articles[index - 1] ?? null,
+      related: articles.filter((candidate) => candidate.id !== article.id && candidate.data.category === article.data.category).slice(0, 3),
+    }
+  }));
+}
+
+const { article, previous, next, related } = Astro.props;
+---
+<ArticleLayout article={article} previous={previous} next={next} related={related} />

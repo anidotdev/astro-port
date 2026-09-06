@@ -1,0 +1,10 @@
+---
+const { article } = Astro.props;
+---
+<div class="article-byline">
+  <time datetime={article.data.date.toISOString()}>
+    {article.data.date.toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' })}
+  </time>
+  <span aria-hidden="true"> · </span>
+  <span>{article.data.readingTime} min read</span>
+</div>

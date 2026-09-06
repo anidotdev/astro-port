@@ -1,0 +1,22 @@
+---
+const { articles = [] } = Astro.props;
+---
+<div class="archive-list">
+  {articles.map((article, index) => (
+    <a class="archive-row" href={`/articles/${article.id}/`}>
+      <span class="archive-number">{String(index + 1).padStart(2, '0')}</span>
+
+      <span class="archive-content">
+        <h3 class="archive-title">{article.data.title}</h3>
+
+        <span class="archive-meta">
+          <span class="archive-category">{article.data.category}</span>
+          <span>{article.data.readingTime} min</span>
+          <time datetime={article.data.date.toISOString()}>
+            {article.data.date.getFullYear()}
+          </time>
+        </span>
+      </span>
+    </a>
+  ))}
+</div>

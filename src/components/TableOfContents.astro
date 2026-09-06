@@ -1,0 +1,42 @@
+<nav class="article-toc" aria-labelledby="toc-title">
+  <p id="toc-title" class="toc-label">On this page</p>
+  <ol class="toc-list" data-toc-list aria-label="Table of contents"></ol>
+</nav>
+
+<script>
+  const list = document.querySelector('[data-toc-list]');
+  const article = document.querySelector('.article-body');
+
+  if (list && article) {
+    const headings = [...article.querySelectorAll('h2')];
+
+    headings.forEach((heading, index) => {
+      if (!heading.id) heading.id = `section-${index + 1}`;
+
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = `#${heading.id}`;
+
+      const num = document.createElement('span');
+      num.className = 'toc-number';
+      num.textContent = String(index + 1).padStart(2, '0');
+
+      a.append(num, document.createTextNode(heading.textContent));
+      li.appendChild(a);
+      list.appendChild(li);
+    });
+
+    const links = [...list.querySelectorAll('a')];
+
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.find((entry) => entry.isIntersecting);
+      if (!visible) return;
+
+      links.forEach((link) => link.removeAttribute('aria-current'));
+      const active = links.find((link) => link.getAttribute('href') === `#${visible.target.id}`);
+      active?.setAttribute('aria-current', 'true');
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: 0.01 });
+
+    headings.forEach((heading) => observer.observe(heading));
+  }
+</script>

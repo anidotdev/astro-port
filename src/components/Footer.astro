@@ -1,27 +1,25 @@
 ---
-const year = new Date().getFullYear();
+import { site } from '../data/site.js';
 ---
-
 <footer class="footer">
-    <div class="inner footer-inner">
-        <span>© {year} Animesh</span>
-        <span class="footer-note">built with Astro</span>
+  <div class="site-shell">
+    <div class="footer-grid">
+      <div>
+        <p class="footer-brand">{site.shortName}</p>
+        <p class="footer-description">Writing about software, systems, and things worth understanding.</p>
+      </div>
+      <div class="footer-links">
+        <a href="/articles/">Articles</a>
+        <a href="/projects/">Projects</a>
+        <a href="/about/">About</a>
+        <a href={site.rss}>RSS</a>
+      </div>
+      <div class="footer-links">
+        <a href={site.github} rel="me noopener noreferrer">GitHub</a>
+        <a href={`mailto:${site.email}`}>Email</a>
+        <a href={site.linkedin} rel="me noopener noreferrer">LinkedIn</a>
+        <span class="footer-meta">© {new Date().getFullYear()} · Built with Astro.</span>
+      </div>
     </div>
+  </div>
 </footer>
-
-<style>
-    .footer {
-        padding: 20px 0;
-    }
-    .footer-inner {
-        display: flex;
-        justify-content: space-between;
-        font-family: var(--mono);
-        font-size: 12px;
-        color: var(--ink-faint);
-        padding-top: 20px;
-        padding-bottom: 20px;
-        flex-wrap: wrap;
-        gap: 6px;
-    }
-</style>
