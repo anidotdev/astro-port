@@ -5,8 +5,3 @@ export const site = {
   linkedin: 'https://www.linkedin.com/in/anidotdev/',
   rss: '/rss.xml'
 };
-
-export const currently = [
-  { label: 'Building', value: 'Backend projects' },
-  { label: 'Writing', value: 'Anything that catches my attention' }
-];

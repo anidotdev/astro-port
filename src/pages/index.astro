@@ -3,7 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ArticleList from '../components/ArticleList.astro';
 import ProjectList from '../components/ProjectList.astro';
 import { getPublishedArticles } from '../lib/content.js';
-import { currently } from '../data/site.js';
 import { projects } from '../data/projects.js';
 
 const articles = await getPublishedArticles();
@@ -12,55 +11,31 @@ const latest = articles.slice(0, 5);
 const selectedProjects = projects.slice(0, 3);
 ---
 <BaseLayout>
-  <div class="site-shell">
+  <div class="site-shell home-page">
     <section class="home-intro" aria-labelledby="intro-title">
-      <div class="home-intro-main">
-        <h1 id="intro-title" class="editorial-lead">
-          I study engineering, build software, and write about the systems and ideas I am still trying to understand.
-        </h1>
-
-        <div class="currently-minimal" aria-labelledby="currently-title">
-          <p id="currently-title" class="eyebrow">Currently</p>
-
-          <ul class="currently-inline">
-            {currently.map((item) => (
-              <li>
-                <span class="currently-label">{item.label}</span>
-                <span class="currently-value">{item.value}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <h1 id="intro-title" class="editorial-lead">
+        I study engineering, build software, and write about the systems and ideas I am still trying to understand.
+      </h1>
     </section>
 
-    <section aria-labelledby="writing-title">
+    <section class="home-section" aria-labelledby="writing-title">
       <div class="section-heading">
-        <h2 id="writing-title">Selected writing</h2>
-        <a class="section-number" href="/articles/">Archive →</a>
+        <h2 id="writing-title">Writing</h2>
+        <a class="section-number" href="/articles/">All →</a>
       </div>
 
       <ArticleList articles={featured.length ? featured : latest} />
     </section>
 
-    <hr class="rule skip-rule" />
+    {selectedProjects.length > 0 && (
+      <section class="home-section home-projects" aria-labelledby="projects-title">
+        <div class="section-heading">
+          <h2 id="projects-title">Projects</h2>
+          <a class="section-number" href="/projects/">All →</a>
+        </div>
 
-    <section aria-labelledby="projects-title">
-      <div class="section-heading">
-        <h2 id="projects-title">Projects</h2>
-        <a class="section-number" href="/projects/">Index →</a>
-      </div>
-
-      <ProjectList projects={selectedProjects} />
-    </section>
-
-    <hr class="rule skip-rule" />
-
-    <section aria-labelledby="note-title">
-      <div class="section-heading">
-        <h2 id="note-title">A place to think</h2>
-        <a class="section-number" href="/notes/">Notes →</a>
-      </div>
-    </section>
+        <ProjectList projects={selectedProjects} />
+      </section>
+    )}
   </div>
 </BaseLayout>

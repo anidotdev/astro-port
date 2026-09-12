@@ -56,19 +56,23 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
                     );
             })();
         </script>
-
         <!-- Cloudflare Web Analytics -->
         <script
             type="module"
             src="https://static.cloudflareinsights.com/beacon.min.js"
             data-cf-beacon='{"token": "75d90a7f14954d73a958453dd8c13c8a"}'
-        ></script><!-- End Cloudflare Web Analytics -->
+        ></script>
+        <!-- End Cloudflare Web Analytics -->
         <title>{title}</title>
     </head>
     <body>
-        <a class="skip-link" href="#main">Skip to content</a>
+        <a class="skip-link" href="#main">
+            Skip to content
+        </a>
         <Header />
-        <main id="main"><slot /></main>
+        <main id="main">
+            <slot />
+        </main>
         <Footer />
     </body>
 </html>

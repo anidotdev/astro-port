@@ -1,7 +1,9 @@
 ---
 import { site } from '../data/site.js';
 import ThemeToggle from './ThemeToggle.astro';
+
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+
 const nav = [
   { href: '/articles/', label: 'Writing', match: '/articles' },
   { href: '/projects/', label: 'Projects', match: '/projects' },
@@ -9,47 +11,140 @@ const nav = [
   { href: '/about/', label: 'About', match: '/about' }
 ];
 ---
-<header class="site-header">
-  <div class="site-shell header-inner">
-    <a class="brand" href="/" aria-label="Animesh home">
-      <span>{site.shortName}</span>
-      <span class="brand-small">/ archive</span>
-    </a>
+
+<aside class="site-sidebar" aria-label="Site navigation">
+  <div class="sidebar-inner">
+    <a class="brand" href="/" aria-label="Animesh home">{site.shortName}</a>
 
     <nav class="site-nav" aria-label="Primary navigation">
       <ul class="nav-list">
         {nav.map((item) => (
-          <li><a href={item.href} aria-current={pathname === item.match || pathname.startsWith(item.match + '/') ? 'page' : undefined}>{item.label}</a></li>
+          <li>
+            <a
+              href={item.href}
+              aria-current={pathname === item.match || pathname.startsWith(item.match + '/') ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
         ))}
       </ul>
     </nav>
 
-    <div class="header-actions">
-      <button class="utility-button" type="button" data-theme-toggle aria-label="Toggle dark mode"><span data-theme-icon>◐</span></button>
+    <div class="sidebar-footer">
+      <button
+        class="theme-button"
+        type="button"
+        data-theme-toggle
+        aria-label="Toggle dark mode"
+      >
+        <span data-theme-icon>◐</span>
+      </button>
       <ThemeToggle />
-      <button class="utility-button mobile-menu-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="mobile-navigation" aria-label="Open menu">Menu</button>
     </div>
   </div>
+</aside>
 
-  <nav id="mobile-navigation" class="site-shell mobile-nav" data-mobile-nav data-open="false" aria-label="Mobile navigation">
-    <ul>
-      {nav.map((item) => (
-        <li><a href={item.href} aria-current={pathname === item.match || pathname.startsWith(item.match + '/') ? 'page' : undefined}>{item.label}</a></li>
-      ))}
-    </ul>
-  </nav>
+<div class="mobile-header">
+  <a class="brand" href="/" aria-label="Animesh home">{site.shortName}</a>
 
-</header>
+  <button
+    class="mobile-menu-button"
+    type="button"
+    data-menu-toggle
+    aria-expanded="false"
+    aria-controls="mobile-navigation"
+    aria-label="Open menu"
+  >
+    Menu
+  </button>
+</div>
+
+<div id="mobile-navigation" class="mobile-sidebar" data-mobile-nav data-open="false">
+  <div class="mobile-sidebar-inner">
+    <div class="mobile-sidebar-head">
+      <a class="brand" href="/" aria-label="Animesh home">{site.shortName}</a>
+      <button
+        class="mobile-close-button"
+        type="button"
+        data-menu-close
+        aria-label="Close menu"
+      >
+        Close
+      </button>
+    </div>
+
+    <nav aria-label="Mobile navigation">
+      <ul class="nav-list">
+        {nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={pathname === item.match || pathname.startsWith(item.match + '/') ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button
+        class="theme-button"
+        type="button"
+        data-theme-toggle-mobile
+        aria-label="Toggle dark mode"
+      >
+        <span data-theme-icon-mobile>◐</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="mobile-sidebar-backdrop" data-menu-backdrop></div>
 
 <script>
-  const qs = (selector, root = document) => root.querySelector(selector);
-  const menuButton = qs('[data-menu-toggle]');
-  const mobileNav = qs('[data-mobile-nav]');
+  const menuButton = document.querySelector('[data-menu-toggle]');
+  const menuClose = document.querySelector('[data-menu-close]');
+  const mobileNav = document.querySelector('[data-mobile-nav]');
+  const backdrop = document.querySelector('[data-menu-backdrop]');
 
-  menuButton?.addEventListener('click', () => {
-    const open = mobileNav.dataset.open === 'true';
-    mobileNav.dataset.open = String(!open);
-    menuButton.setAttribute('aria-expanded', String(!open));
-    menuButton.setAttribute('aria-label', open ? 'Open menu' : 'Close menu');
+  const setMenu = (open) => {
+    if (!mobileNav || !menuButton) return;
+    mobileNav.dataset.open = String(open);
+    menuButton.setAttribute('aria-expanded', String(open));
+    menuButton.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    document.documentElement.dataset.menuOpen = String(open);
+    if (backdrop) backdrop.dataset.open = String(open);
+  };
+
+  menuButton?.addEventListener('click', () => setMenu(mobileNav?.dataset.open !== 'true'));
+  menuClose?.addEventListener('click', () => setMenu(false));
+  backdrop?.addEventListener('click', () => setMenu(false));
+  mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setMenu(false)));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setMenu(false);
   });
+
+  const syncMobileTheme = () => {
+    const theme = document.documentElement.dataset.theme || 'light';
+    const icon = document.querySelector('[data-theme-icon-mobile]');
+    const button = document.querySelector('[data-theme-toggle-mobile]');
+    if (icon) icon.textContent = theme === 'dark' ? '☼' : '◐';
+    button?.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  };
+
+  document.querySelector('[data-theme-toggle-mobile]')?.addEventListener('click', () => {
+    const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = nextTheme;
+    localStorage.setItem('animesh-theme', nextTheme);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute(
+      'content',
+      nextTheme === 'dark' ? '#1d1d1a' : '#f5f1e8'
+    );
+    syncMobileTheme();
+  });
+
+  syncMobileTheme();
 </script>

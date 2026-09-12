@@ -1,12 +1,11 @@
 body, button, input, select { font-variant-numeric: oldstyle-nums proportional-nums; }
-
 h1, h2, h3, h4, p { text-wrap: pretty; }
 
 .page-title {
   margin: 0;
   max-width: 980px;
   font-family: var(--font-serif);
-  font-size: clamp(3rem, 7vw, 6.1rem);
+  font-size: clamp(3rem, 7vw, 6rem);
   font-weight: 500;
   line-height: 0.97;
   letter-spacing: -0.045em;
@@ -14,11 +13,11 @@ h1, h2, h3, h4, p { text-wrap: pretty; }
 
 .editorial-lead {
   margin: 0;
-  max-width: 22ch;
+  max-width: 24ch;
   font-family: var(--font-serif);
-  font-size: clamp(2rem, 4vw, 3.3rem);
+  font-size: clamp(2rem, 4vw, 3.35rem);
   font-weight: 400;
-  line-height: 1.07;
+  line-height: 1.05;
   letter-spacing: -0.025em;
 }
 
@@ -26,24 +25,24 @@ h1, h2, h3, h4, p { text-wrap: pretty; }
   width: min(100%, var(--reading-width));
   margin-inline: auto;
   font-family: var(--font-serif);
-  font-size: clamp(1.08rem, 1.65vw, 1.26rem);
+  font-size: clamp(1.08rem, 1.6vw, 1.23rem);
   line-height: 1.82;
   text-wrap: pretty;
 }
 
-.article-body > p { margin-block: 1.5em; }
+.article-body > p { margin-block: 1.55em; }
 .article-body h2 {
-  margin-top: 3.4em;
-  margin-bottom: 0.7em;
-  font-size: clamp(1.85rem, 3.2vw, 2.65rem);
-  line-height: 1.1;
+  margin-top: 3.8em;
+  margin-bottom: 0.75em;
+  font-size: clamp(1.8rem, 3vw, 2.55rem);
+  line-height: 1.08;
   font-weight: 500;
   letter-spacing: -0.02em;
 }
 .article-body h3 {
-  margin-top: 2.6em;
-  margin-bottom: 0.55em;
-  font-size: clamp(1.35rem, 2.1vw, 1.75rem);
+  margin-top: 2.8em;
+  margin-bottom: 0.6em;
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
   line-height: 1.2;
   font-weight: 600;
 }
@@ -58,7 +57,7 @@ h1, h2, h3, h4, p { text-wrap: pretty; }
 .article-body li { margin-block: 0.5em; padding-inline-start: 0.15em; }
 
 .article-body blockquote {
-  margin: 2.2rem 0;
+  margin: 2.3rem 0;
   padding: 0.25rem 0 0.25rem 1.3rem;
   border-left: 1px solid var(--color-accent);
   color: var(--color-muted);
@@ -75,9 +74,9 @@ h1, h2, h3, h4, p { text-wrap: pretty; }
 .article-body pre {
   overflow-x: auto;
   margin-block: 2rem;
-  padding: 1rem 1.15rem;
+  padding: 1rem 1.1rem;
   border: 1px solid var(--color-border);
-  border-radius: 3px;
+  border-radius: 2px;
   background: var(--color-code);
   color: var(--color-code-text);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -101,13 +100,12 @@ h1, h2, h3, h4, p { text-wrap: pretty; }
   vertical-align: top;
 }
 .article-body th { font-weight: 650; }
-
-.article-body figure { margin: 2.6rem 0; }
+.article-body figure { margin: 2.8rem 0; }
 .article-body figcaption {
   margin-top: 0.65rem;
   color: var(--color-muted);
   font-family: var(--font-sans);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   line-height: 1.45;
 }
 

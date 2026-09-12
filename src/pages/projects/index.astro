@@ -3,14 +3,19 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectList from '../../components/ProjectList.astro';
 import { projects } from '../../data/projects.js';
 ---
-<BaseLayout title="Projects — Animesh" description="Software projects and engineering experiments by Animesh.">
-  <div class="site-shell page-intro">
-    <p class="eyebrow">Archive / Building</p>
+<BaseLayout title="Projects — Animesh" description="Things I have built and experimented with.">
+  <div class="site-shell page-intro compact-intro">
+    <p class="eyebrow">Projects</p>
     <h1 class="page-title" style="margin-top:1rem">Projects</h1>
-    <p class="editorial-lead" style="margin-top:2rem;font-size:clamp(1.55rem,3.2vw,2.55rem);max-width:30ch">Things I have built to understand a system, test an idea, or turn something I learned into software.</p>
   </div>
-  <section class="site-shell" aria-labelledby="projects-list-title" style="padding-bottom:4rem">
-    <div class="section-heading"><h2 id="projects-list-title">Project index</h2><span class="section-number">{String(projects.length).padStart(2, '0')}</span></div>
+
+  <section class="site-shell archive-page" aria-labelledby="projects-list-title">
+    <div class="section-heading">
+      <h2 id="projects-list-title">Index</h2>
+    </div>
+
     <ProjectList projects={projects} />
+
+    {!projects.length && <p class="empty-state">Nothing here yet.</p>}
   </section>
 </BaseLayout>

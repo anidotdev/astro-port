@@ -1,164 +1,64 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import ProjectList from "../components/ProjectList.astro";
-import { projects } from "../data/projects.js";
 import { site } from "../data/site.js";
 ---
 
 <BaseLayout
-    title="About me"
-    description="A little about myself and my learnings."
+  title="About — Animesh"
+  description="A little about me and the things I am learning and building."
 >
-    <div class="site-shell page-intro">
-        <p class="eyebrow">About</p>
-        <h3 class="page-title" style="margin-top:1rem">:D</h3>
+  <div class="site-shell page-intro compact-intro">
+    <p class="eyebrow">About</p>
+    <h1 class="page-title" style="margin-top:1rem">A little about me</h1>
+  </div>
+
+  <section class="site-shell about-page" aria-labelledby="about-intro-title">
+    <div class="about-copy">
+      <h2 id="about-intro-title" class="editorial-lead">
+        I am an engineering student who likes understanding how things work.
+      </h2>
+
+      <div class="about-body">
+        <p>
+          Most of my time goes into learning, building things, and trying to
+          understand the parts of software that are usually hidden behind
+          abstractions.
+        </p>
+
+        <p>
+          I like writing software, but I am also interested in what happens
+          underneath it. Networks, protocols, operating systems, databases,
+          backend systems, and all the small decisions that make software
+          actually work.
+        </p>
+
+        <p>
+          A lot of what I learn starts with a simple question. I usually end up
+          reading about it, trying something myself, breaking it a few times,
+          and then writing about it once I understand it a little better.
+        </p>
+
+        <p>
+          That is more or less what this website is. A place to keep track of
+          things I am learning, things I have built, ideas I am thinking about,
+          and things I do not want to forget.
+        </p>
+
+        <p>
+          I am also interested in entrepreneurship and the process of turning
+          an idea into something people can actually use. I am still figuring
+          out what that looks like, so I would rather document the process than
+          pretend I already have it figured out.
+        </p>
+      </div>
     </div>
 
-    <section
-        class="site-shell"
-        style="padding-bottom:5rem;max-width:980px"
-        aria-labelledby="about-intro-title"
-    >
-        <h2
-            id="about-intro-title"
-            class="editorial-lead"
-            style="max-width:26ch"
-        >
-            I am an engineering student who likes understanding how things work.
-        </h2>
-
-        <div
-            style="width:min(100%,730px);margin:2.5rem auto 0;font-family:var(--font-serif);font-size:1.18rem;line-height:1.8"
-        >
-            <p>
-                Most of my time goes into learning, building things, and trying
-                to understand the parts of software that are usually hidden
-                behind abstractions.
-            </p>
-
-            <p>
-                I like writing software, but I am also interested in what
-                happens underneath it. Things like networks, protocols,
-                operating systems, databases, backend systems, and all the small
-                decisions that make software actually work.
-            </p>
-
-            <p>
-                A lot of what I learn starts with a simple question. I usually
-                end up reading about it, trying something myself, breaking it a
-                few times, and then writing about it once I understand it a
-                little better.
-            </p>
-
-            <p>
-                That is more or less what this website is. It is a place where I
-                keep track of things I am learning, things I have built, ideas I
-                am thinking about, and things I do not want to forget.
-            </p>
-
-            <p>
-                I am also interested in entrepreneurship and the process of
-                turning an idea into something people can actually use. I am
-                still figuring out what that looks like, so I would rather
-                document the process than pretend I already have it figured out.
-            </p>
-        </div>
-    </section>
-
-    <hr class="rule" />
-
-    <section
-        class="site-shell"
-        style="padding-block:4rem"
-        aria-labelledby="work-title"
-    >
-        <div class="section-heading">
-            <h2 id="work-title">What I spend time on</h2>
-            <span class="section-number">These days</span>
-        </div>
-
-        <div
-            class="interest-grid"
-            style="grid-template-columns:repeat(2,minmax(0,1fr))"
-        >
-            <article class="interest-item">
-                <span class="interest-number">01</span>
-                <h3 class="interest-title">Software</h3>
-                <ul class="interest-items">
-                    <li>Backend systems</li>
-                    <li>Web applications</li>
-                    <li>Data structures</li>
-                    <li>System design</li>
-                </ul>
-            </article>
-
-            <article class="interest-item">
-                <span class="interest-number">02</span>
-                <h3 class="interest-title">Learning</h3>
-                <ul class="interest-items">
-                    <li>Networking</li>
-                    <li>Databases</li>
-                    <li>Systems</li>
-                    <li>Programming</li>
-                </ul>
-            </article>
-
-            <article class="interest-item">
-                <span class="interest-number">03</span>
-                <h3 class="interest-title">Writing</h3>
-                <ul class="interest-items">
-                    <li>Technical articles</li>
-                    <li>Notes</li>
-                    <li>Things I recently learned</li>
-                    <li>Questions I am still figuring out</li>
-                </ul>
-            </article>
-
-            <article class="interest-item">
-                <span class="interest-number">04</span>
-                <h3 class="interest-title">Building</h3>
-                <ul class="interest-items">
-                    <li>Small tools</li>
-                    <li>Backend projects</li>
-                    <li>Experiments</li>
-                    <li>Product ideas</li>
-                </ul>
-            </article>
-        </div>
-    </section>
-
-    <hr class="rule" />
-
-    <section
-        class="site-shell"
-        style="padding-block:4rem"
-        aria-labelledby="elsewhere-title"
-    >
-        <div class="section-heading">
-            <h2 id="elsewhere-title">Elsewhere</h2>
-            <span class="section-number">Links</span>
-        </div>
-
-        <div class="footer-links" style="font-size:1rem">
-            <a href={`mailto:${site.email}`}>Email — {site.email}</a>
-            <a href={site.github} rel="me noopener noreferrer">GitHub</a>
-            <a href={site.linkedin} rel="me noopener noreferrer">LinkedIn</a>
-            <a href="/rss.xml">RSS</a>
-        </div>
-    </section>
-
-    <hr class="rule" />
-
-    <section
-        class="site-shell"
-        style="padding-top:4rem"
-        aria-labelledby="selected-projects-title"
-    >
-        <div class="section-heading">
-            <h2 id="selected-projects-title">Selected projects</h2>
-            <a class="section-number" href="/projects/">Project index →</a>
-        </div>
-
-        <ProjectList projects={projects} />
-    </section>
+    <div class="about-links" aria-labelledby="elsewhere-title">
+      <p id="elsewhere-title" class="eyebrow">Elsewhere</p>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+      <a href={site.github} rel="me noopener noreferrer">GitHub</a>
+      <a href={site.linkedin} rel="me noopener noreferrer">LinkedIn</a>
+      <a href="/rss.xml">RSS</a>
+    </div>
+  </section>
 </BaseLayout>

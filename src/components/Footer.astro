@@ -2,24 +2,17 @@
 import { site } from '../data/site.js';
 ---
 <footer class="footer">
-  <div class="site-shell">
-    <div class="footer-grid">
-      <div>
-        <p class="footer-brand">{site.shortName}</p>
-        <p class="footer-description">Writing about software, systems, and things worth understanding.</p>
-      </div>
-      <div class="footer-links">
-        <a href="/articles/">Articles</a>
-        <a href="/projects/">Projects</a>
-        <a href="/about/">About</a>
-        <a href={site.rss}>RSS</a>
-      </div>
-      <div class="footer-links">
-        <a href={site.github} rel="me noopener noreferrer">GitHub</a>
-        <a href={`mailto:${site.email}`}>Email</a>
-        <a href={site.linkedin} rel="me noopener noreferrer">LinkedIn</a>
-        <span class="footer-meta">© {new Date().getFullYear()} · Built with Astro.</span>
-      </div>
-    </div>
+  <div class="site-shell footer-inner">
+    <span class="footer-brand">{site.shortName}</span>
+
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="/articles/">Writing</a>
+      <a href="/projects/">Projects</a>
+      <a href="/notes/">Notes</a>
+      <a href="/about/">About</a>
+      <a href={site.rss}>RSS</a>
+    </nav>
+
+    <span class="footer-meta">© {new Date().getFullYear()}</span>
   </div>
 </footer>

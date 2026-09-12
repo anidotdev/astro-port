@@ -6,21 +6,19 @@ import { getPublishedArticles } from '../../lib/content.js';
 const articles = await getPublishedArticles();
 const years = [...new Set(articles.map((article) => article.data.date.getFullYear()))];
 ---
-<BaseLayout title="Writing — Animesh" description="Technical articles, engineering essays, and notes from Animesh's evolving engineering notebook.">
-  <div class="site-shell page-intro">
-    <p class="eyebrow">Archive / Writing</p>
+<BaseLayout title="Writing — Animesh" description="Technical writing and things I am learning.">
+  <div class="site-shell page-intro compact-intro">
+    <p class="eyebrow">Writing</p>
     <h1 class="page-title" style="margin-top:1rem">Articles</h1>
-    <p class="editorial-lead" style="margin-top:2rem;font-size:clamp(1.55rem,3.2vw,2.55rem);max-width:30ch">Technical essays about software, systems, networking, backend architecture, and the things I am still learning.</p>
   </div>
 
-  <div class="site-shell">
+  <div class="site-shell archive-page">
     {years.map((year) => {
       const yearArticles = articles.filter((article) => article.data.date.getFullYear() === year);
       return (
-        <section style="margin-bottom:5rem" aria-labelledby={`year-${year}`}>
+        <section class="archive-year-section" aria-labelledby={`year-${year}`}>
           <div class="section-heading">
-            <h2 id={`year-${year}`} class="serif" style="font-size:1.65rem">{year}</h2>
-            <span class="section-number">{String(yearArticles.length).padStart(2, '0')} entries</span>
+            <h2 id={`year-${year}`} class="serif year-heading">{year}</h2>
           </div>
           <ArticleList articles={yearArticles} />
         </section>

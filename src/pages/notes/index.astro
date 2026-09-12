@@ -12,25 +12,15 @@ const formatDate = (value) =>
   });
 ---
 
-<BaseLayout
-  title="Notes — Animesh"
-  description="Short observations and working notes from Animesh's engineering notebook."
->
-  <div class="site-shell page-intro">
-    <p class="eyebrow">Notebook / Short form</p>
+<BaseLayout title="Notes — Animesh" description="Short notes and things worth keeping around.">
+  <div class="site-shell page-intro compact-intro">
+    <p class="eyebrow">Notes</p>
     <h1 class="page-title" style="margin-top:1rem">Notes</h1>
-    <p
-      class="editorial-lead"
-      style="margin-top:2rem;font-size:clamp(1.55rem,3.2vw,2.55rem);max-width:29ch"
-    >
-      Small observations, partial conclusions, and ideas worth keeping around.
-    </p>
   </div>
 
-  <section class="site-shell" style="padding-bottom:4rem" aria-labelledby="notes-index-title">
+  <section class="site-shell archive-page" aria-labelledby="notes-index-title">
     <div class="section-heading">
-      <h2 id="notes-index-title">Notebook entries</h2>
-      <span class="section-number">{String(notes.length).padStart(2, '0')}</span>
+      <h2 id="notes-index-title">Entries</h2>
     </div>
 
     <div class="notes-list">
@@ -50,11 +40,7 @@ const formatDate = (value) =>
         </article>
       ))}
 
-      {!notes.length && (
-        <p class="notes-empty">
-          No notes yet.
-        </p>
-      )}
+      {!notes.length && <p class="empty-state">Nothing here yet.</p>}
     </div>
   </section>
 </BaseLayout>
